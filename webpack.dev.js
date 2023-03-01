@@ -50,6 +50,9 @@ module.exports = merge(common, {
         },
         port: 1009,
         open: true
+    },
+    optimization: {
+        runtimeChunk: 'single'
     }
 });
 
