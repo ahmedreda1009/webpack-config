@@ -5,6 +5,7 @@ const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -59,6 +60,35 @@ module.exports = merge(common, {
                     collapseWhitespace: true,
                     removeComments: true
                 }
+            }),
+            new ImageMinimizerPlugin({
+                minimizer: {
+                    implementation: ImageMinimizerPlugin.sharpMinify,
+                    options: {
+                        encodeOptions: {
+                            jpeg: {
+                                // https://sharp.pixelplumbing.com/api-output#jpeg
+                                quality: 100,
+                            },
+                            webp: {
+                                // https://sharp.pixelplumbing.com/api-output#webp
+                                lossless: true,
+                            },
+                            avif: {
+                                // https://sharp.pixelplumbing.com/api-output#avif
+                                lossless: true,
+                            },
+
+                            // png by default sets the quality to 100%, which is same as lossless
+                            // https://sharp.pixelplumbing.com/api-output#png
+                            png: {},
+
+                            // gif does not support lossless compression at all
+                            // https://sharp.pixelplumbing.com/api-output#gif
+                            gif: {},
+                        },
+                    },
+                },
             })
         ].concat(multipleHtmlPlugins),
     },
